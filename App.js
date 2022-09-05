@@ -1,15 +1,28 @@
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import {StyleSheet} from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import Calculator from './assignments/assignment1';
+import GuessingGame from './assignments/assignment2';
+import Home from './components/Home';
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
+  
+  
+  const Stack =createNativeStackNavigator();
 
+  return (
+    <NavigationContainer style={styles.container}>
+      <Stack.Navigator>
+      <Stack.Screen name='Home' component={Home}/>
+        <Stack.Screen name="Assignment 1" component={Calculator}/>
+        <Stack.Screen name="Assignment 2" component={GuessingGame}/>
+      </Stack.Navigator>
+      <StatusBar style="auto" />
+    </NavigationContainer>
+  );
+
+  }
 const styles = StyleSheet.create({
   container: {
     flex: 1,
