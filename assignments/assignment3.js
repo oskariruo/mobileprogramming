@@ -1,18 +1,28 @@
 import { StatusBar } from 'expo-status-bar';
-import {Button, StyleSheet, Text, View, TextInput } from 'react-native';
+import {Button, StyleSheet, Text, View, TextInput, FlatList } from 'react-native';
 import React, { useState } from 'react';
 
-export default function Calculator({navigation}) {
-  const [numberOne, setNumberOne] = useState(0);
-  const [numberTwo, setNumberTwo] = useState(0);
+export default function MemoryCalculator() {  
+  const [history, setHistory] = useState([]);
+  const [numberOne, setNumberOne] = useState('');
+  const [numberTwo, setNumberTwo] = useState('');
   const [answer, setAnswer] = useState('');
 
+
   const sum = () => {
-    setAnswer(parseInt(numberOne) + parseInt(numberTwo))
+    setAnswer(parseInt(numberOne) + parseInt(numberTwo));
+    let calc =`${numberOne} + ${numberTwo} = ${parseInt(numberOne) + parseInt(numberTwo)}`;
+    setHistory([...history, calc]);
+    setNumberOne('');
+    setNumberTwo('');
   }
 
   const minus = () => {
-    setAnswer(parseInt(numberOne) - parseInt(numberTwo))
+    setAnswer(parseInt(numberOne) - parseInt(numberTwo));
+    let calc =`${numberOne} - ${numberTwo} = ${parseInt(numberOne) - parseInt(numberTwo)}`;
+    setHistory([...history, calc]);
+    setNumberOne('');
+    setNumberTwo('');
   }
   
   return (
@@ -31,6 +41,14 @@ export default function Calculator({navigation}) {
       onPress={(i) => sum(i)}/>
       <Button title="-"
       onPress={(i) => minus(i)}/>
+      
+        <Text>History</Text>
+      <FlatList
+      data={history}
+      renderItem={ ({item}) =>
+      <Text>{item}</Text>
+      }
+      />
       <StatusBar style="auto" />
     </View>
   );
