@@ -7,6 +7,10 @@ import GuessingGame from './assignments/assignment2';
 import MemoryCalculator from './assignments/assignment3';
 import ShoppingList from './assignments/assignment4';
 import Home from './components/Home';
+import Calculator5 from './assignments/assignment5/calculator';
+import History5 from './assignments/assignment5/history';
+import RecipeFinder from './assignments/assignment6';
+import Converter from './assignments/assignment7';
 
 export default function App() {
   
@@ -21,6 +25,10 @@ export default function App() {
         <Stack.Screen name='Assignment 2' component={GuessingGame}/>
         <Stack.Screen name='Assignment 3' component={MemoryCalculator}/>
         <Stack.Screen name='Assignment 4' component={ShoppingList}/>
+        <Stack.Screen name='Assignment 5' component={Calculator5}/>
+        <Stack.Screen name='History' component={History5}/>
+        <Stack.Screen name='Assignment 6' component={RecipeFinder}/>
+        <Stack.Screen name='Assignment 7' component={Converter}/>
       </Stack.Navigator>
       <StatusBar style="auto" />
     </NavigationContainer>
