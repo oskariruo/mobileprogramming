@@ -7,7 +7,7 @@ export default function App() {
     const [amount, setAmount] = useState('');
     const [codes, setCodes] = useState([]);
     const [selectedCode, setSelectedCode] = useState('CHF');
-    const to = "EUR";
+    const eur = "EUR";
     const key = "Kx0PcvCdtWfVCijCd1vfvXWUzz027ypt";
 
     const fetchCodes = () => {
@@ -25,38 +25,33 @@ export default function App() {
             .then(result => setCodes(Object.keys(JSON.parse(result).symbols)))
             .catch(error => {
                 Alert.alert('Error', error);
-                console.log(error);
             });
     }
 
     const fetchConvert = () => {
-        let myHeaders = new Headers();
-        myHeaders.append("apikey", key);
+        let theHeaders = new Headers();
+        theHeaders.append("apikey", key);
 
         let requestOptions = {
             method: 'GET',
             redirect: 'follow',
-            headers: myHeaders
+            headers: theHeaders
         };
 
-        let amount1 = parseFloat(amount);
+        let theAmount = parseFloat(amount);
 
-        fetch(`https://api.apilayer.com/exchangerates_data/convert?to=${to}&from=${selectedCode}&amount=${amount1}`, requestOptions)
+        fetch(`https://api.apilayer.com/exchangerates_data/convert?to=${eur}&from=${selectedCode}&amount=${theAmount}`, requestOptions)
             .then(response => response.text())
             .then(result => {
                 setResult(JSON.parse(result).result);
-                console.log(result);
             })
             .catch(error => {
                 Alert.alert('Error', error);
-                console.log(error);
             });
-        console.log(result);
     }
 
     useEffect(() => {
         fetchCodes()
-        console.log(codes);
     }, []);
 
     return (
@@ -70,14 +65,12 @@ export default function App() {
                     keyboardType={"number-pad"}
                     onChangeText={text => setAmount(text)}
                     placeholder={'Amount'}
-                    placeholderTextColor={'grey'}
                 />
                 <Picker
                     placeholder='CHF'
                     selectedValue={selectedCode}
                     onValueChange={(itemValue) => {
                         setSelectedCode(itemValue);
-                        console.log(itemValue);
                     }
                     }
                     style={styles.pickerInput}>
@@ -93,34 +86,21 @@ export default function App() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
         alignItems: 'center',
-        justifyContent: 'center',
-        margin: 11,
-        marginTop: 66,
+        justifyContent: 'center'
     },
     result: {
-        fontSize: 24,
-        margin: 11,
+        fontSize: 24
 
     },
     textInput: {
-        borderColor: 'black',
-        borderWidth: 1,
-        fontSize: 16,
-        padding: 5,
-        marginTop: 11,
-        minWidth: 200,
+        fontSize: 18,
         marginBottom: 5,
-        maxWidth: 200,
+        minWidth: 100
     },
     pickerInput: {
-        borderColor: 'black',
-        borderWidth: 1,
-        fontSize: 16,
+        fontSize: 18,
         padding: 5,
-        marginTop: 11,
-        minWidth: 100,
-        marginBottom: 5
+        minWidth: 100
     },
 });
