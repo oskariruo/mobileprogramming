@@ -1,36 +1,60 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { StyleSheet, View, Button, TextInput, Alert } from 'react-native';
 import Mapview, { Marker } from 'react-native-maps'
+import * as Location from 'expo-location';
 
-export default function ModifiedMap(){
-
+export default function ModifiedMap() {
+    const latitudeDelta= 0.0322;
+    const longitudeDelta= 0.0221;
     const key= "YQArfeZ6vUbfN2xDe9A1Trk0f8PlcrKD";
 
-    const [adress, setAddress] = useState('');
+    const [input, setInput] = useState('Haaga-Helia');
     const [region, setRegion] = useState({
         latitude: 60.200692,
         longitude: 24.934302,
-        latitudeDelta: 0.0322,
-        longitudeDelta: 0.0221,
+        latitudeDelta: latitudeDelta,
+        longitudeDelta: longitudeDelta,
     });
 
     const getMap = () => {
-        const url = `https://www.mapquestapi.com/geocoding/v1/address?key=${key}&location=${input}`;
-        fetch(url)
+        fetch(`https://www.mapquestapi.com/geocoding/v1/address?key=${key}&location=${input}`)
         .then((response) => response.json())
-        .then(responseJson => { setRegion({
-            latitude: responseJson.results[0].geometry.location.lat,
-            longitude: responseJson.results[0].geometry.location.lng,
-            latitudeDelta: 0.0322,
-            longitudeDelta: 0.0221
-          })
+        .then(data => {
+            location = data.results[0].locations[0]
+
+            setRegion({
+                latitude: location.latLng.lat,
+                longitude: location.latLng.lng,
+                latitudeDelta: latitudeDelta,
+                longitudeDelta: longitudeDelta
+          });
         })
         .catch((e) => { Alert.alert('Error', e);
     });
+    }
+
+    useEffect(() => {
+      (async () => {
+            let { status } = await Location.requestForegroundPermissionsAsync();
+            if (status !== 'granted') {
+                Alert.alert('No permission to get location')
+                return;    
+            }
+            let location = await Location.getCurrentPositionAsync({});
+
+            setRegion({
+                latitude: location.coords.latitude,
+                longitude: location.coords.longitude,
+                longitudeDelta: longitudeDelta,
+                latitudeDelta: latitudeDelta
+            }) 
+            })();
+        }, []);
 
     return (
-        <View>
+        <View style={styles.container}>
             <Mapview
+            style={{flex: 1, height: '100%', width: '100%'}}
             region={region}>
                 <Marker
                 coordinate={{
@@ -39,11 +63,20 @@ export default function ModifiedMap(){
                     title={input}/>
             </Mapview>
             <TextInput
-            value={address}
+            value={input}
             placeholder="Enter address"
-            onChangeText={(address) => setAddress(address)}/>
+            onChangeText={(input) => setInput(input)}/>
             <Button title='SHOW' onPress={getMap}/>
         </View>
     )
-    }
+    
 }
+
+const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: '#fff',
+      alignItems: 'center',
+      justifyContent: 'center',
+    }
+  });
