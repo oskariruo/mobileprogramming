@@ -11,6 +11,8 @@ import Calculator5 from './assignments/assignment5/calculator';
 import History5 from './assignments/assignment5/history';
 import RecipeFinder from './assignments/assignment6';
 import Converter from './assignments/assignment7';
+import Map from './assignments/assignment8';
+import ModifiedMap from './assignments/assignment10';
 
 export default function App() {
   
@@ -29,6 +31,8 @@ export default function App() {
         <Stack.Screen name='History' component={History5}/>
         <Stack.Screen name='Assignment 6' component={RecipeFinder}/>
         <Stack.Screen name='Assignment 7' component={Converter}/>
+        <Stack.Screen name='Assignment 8' component={Map}/>
+        <Stack.Screen name='Assignment 10' component={ModifiedMap}/>
       </Stack.Navigator>
       <StatusBar style="auto" />
     </NavigationContainer>
