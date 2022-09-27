@@ -13,6 +13,8 @@ import RecipeFinder from './assignments/assignment6';
 import Converter from './assignments/assignment7';
 import Map from './assignments/assignment8';
 import ModifiedMap from './assignments/assignment10';
+import SQLShoppingList from './assignments/assignment11';
+import FirebaseShoppingList from './assignments/assignment12';
 
 export default function App() {
   
@@ -33,6 +35,8 @@ export default function App() {
         <Stack.Screen name='Assignment 7' component={Converter}/>
         <Stack.Screen name='Assignment 8' component={Map}/>
         <Stack.Screen name='Assignment 10' component={ModifiedMap}/>
+        <Stack.Screen name='Assignment 11' component={SQLShoppingList}/>
+        <Stack.Screen name='Assignment 12' component={FirebaseShoppingList}/>
       </Stack.Navigator>
       <StatusBar style="auto" />
     </NavigationContainer>
