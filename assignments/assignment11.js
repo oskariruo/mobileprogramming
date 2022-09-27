@@ -1,4 +1,3 @@
-import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, Button, TextInput, FlatList } from 'react-native';
 import * as SQLite from 'expo-sqlite';
@@ -18,25 +17,45 @@ useEffect(() => {
     );
 }, []);
 
-    const addItem = () => {
-        setData([...data, { key: text }]);
-        setText('');
+  const saveItem = () => {
+    db.transaction(tx => {
+        tx.executeSql('insert into shopping(product, amount) values (?, ?);', [product, amount]);
+    }, null, updateList
+    )
   }
 
+  const updateList = () => {
+    db.transaction(tx => {
+      tx.executeSql('select * from shopping;', [], (_, { rows }) =>
+        setData(rows._array)
+      ); 
+    });
+  }
+
+  const deleteItem = (id) => {
+    db.transaction(
+        tx => {
+            tx.executeSql(`delete from shopping where id = ?`, [id]);
+        }, null, updateList
+    )
+  }
     return (
     <View style={styles.container}>
-    <TextInput style={styles.input} placeholder='Product' onChangeText={text => setText(text)} value={text} />
-    <TextInput style={styles.input} placeholder='Amount' onChangeText={text => setText(text)} value={text} />
+    <TextInput style={styles.input} placeholder='Product' onChangeText={product => setProduct(product)} value={product} />
+    <TextInput style={styles.input} placeholder='Amount' onChangeText={amount => setAmount(amount)} value={amount} />
       <Button onPress={addItem} title="Add Item" />
       <Button onPress={() => setData([])} title="Clear"/>
       <Text style={styles.heading}>Shopping list</Text>
       <FlatList style={styles.list}
+        keyExtractor={item => item.id.toString()}
         data={data}
         renderItem={({ item }) =>
-          <Text>{item.key}</Text>
+          <View style={styles.listcontainer}>
+            <Text style={styles.text}>{item.product}, {item.amount}</Text>
+            <Text style={styles.textdelete} onPress={() => deleteItem(item.id)}></Text>
+          </View>
         }
       />
-      <StatusBar style="auto" />
     </View>
   );
 }
@@ -57,5 +76,17 @@ const styles = StyleSheet.create({
   },
   heading: {
     color: 'blue'
-  }
+  },
+  text: {
+    fontSize: 18
+  },
+  textdelete: {
+    fontSize: 18,
+    color: '#0000ff'
+  },
+  listcontainer: {
+    flexDirection: 'row',
+    backgroundColor: '#fff',
+    alignItems: 'center'
+  },
 });
