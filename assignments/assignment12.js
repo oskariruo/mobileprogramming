@@ -1,29 +1,63 @@
-import { StatusBar } from 'expo-status-bar';
-import React, { useState } from 'react';
+import { initializeApp } from "firebase/app";
+import { getDatabase, push, ref, onValue, remove } from'firebase/database';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, Button, TextInput, FlatList } from 'react-native';
 
-export default function FirebaseShoppingList() {
-  const [text, setText] = useState('');
-  const [data, setData] = useState([]);
 
-  const addItem = () => {
-    setData([...data, { key: text }]);
-    setText('');
+export default function FireBaseShoppingList() {
+
+  const firebaseConfig = {
+  apiKey: "AIzaSyBkIjkMt_UHJE4xdMxHuSrtsM0ACGtwBz0",
+  authDomain: "shoppinglist-cdff3.firebaseapp.com",
+  databaseURL: "https://shoppinglist-cdff3-default-rtdb.europe-west1.firebasedatabase.app/",
+  projectId: "shoppinglist-cdff3",
+  storageBucket: "shoppinglist-cdff3.appspot.com",
+  messagingSenderId: "408726865689",
+  appId: "1:408726865689:web:fa569b902afb3e0dc86788",
+  measurementId: "G-PMV8EEWXP1"
+};
+const app = initializeApp(firebaseConfig);
+const database = getDatabase(app);
+
+    const [product, setProduct] = useState('');
+    const [amount, setAmount] = useState('');
+    const [items, setItems] = useState([]);
+
+useEffect(() => {
+  const itemsRef = ref(database, 'items/');
+  onValue(itemsRef, (snapshot) => {
+    const data = snapshot.val();
+    setItems(Object.values(data));
+  });
+}, []);
+
+  const saveItem = () => {
+    push(
+      ref(database, 'items/'),
+      { 'product': product, 'amount': amount});
+   }
+
+  const deleteItem = async (id) => {
+   remove(
+    ref(database, 'items/' + id)
+   )
   }
-
-  return (
+    return (
     <View style={styles.container}>
-      <TextInput style={styles.input} onChangeText={text => setText(text)} value={text} />
-      <Button onPress={addItem} title="Add Item" />
-      <Button onPress={() => setData([])} title="Clear"/>
+    <TextInput style={styles.input} placeholder='Product' onChangeText={product => setProduct(product)} value={product} />
+    <TextInput style={styles.input} placeholder='Amount' onChangeText={amount => setAmount(amount)} value={amount} />
+      <Button onPress={saveItem} title="Add Item" />
       <Text style={styles.heading}>Shopping list</Text>
       <FlatList style={styles.list}
-        data={data}
+        keyExtractor={item => item.id.toString()}
+        data={items}
         renderItem={({ item }) =>
-          <Text>{item.key}</Text>
+          <View style={styles.listcontainer}>
+            <Text style={styles.text}>{item.product}, {item.amount}</Text>
+            <Text style={styles.textdelete} onPress={() => deleteItem(item.id)}> bought</Text>
+          </View>
         }
       />
-      <StatusBar style="auto" />
     </View>
   );
 }
@@ -36,7 +70,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   input: {
-    marginTop: 50,
+    marginTop: 5,
     marginBottom: 5,
     width: 200,
     borderColor: 'gray',
@@ -44,5 +78,18 @@ const styles = StyleSheet.create({
   },
   heading: {
     color: 'blue'
-  }
+  },
+  text: {
+    fontSize: 18
+  },
+  textdelete: {
+    fontSize: 18,
+    color: '#0000ff'
+  },
+  listcontainer: {
+    marginTop:50,
+    flexDirection: 'row',
+    backgroundColor: '#fff',
+    alignItems: 'center'
+  },
 });
