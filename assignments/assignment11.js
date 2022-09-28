@@ -12,7 +12,7 @@ export default function SQLShoppingList() {
   
 useEffect(() => {
     db.transaction(tx => {
-        tx.executeSql('create table if not exists shopping (id integer primary key not nut, product text, amount text);');
+        tx.executeSql('create table if not exists shopping (id integer primary key not null, product text, amount text);');
     }, null, updateList
     );
 }, []);
@@ -43,8 +43,7 @@ useEffect(() => {
     <View style={styles.container}>
     <TextInput style={styles.input} placeholder='Product' onChangeText={product => setProduct(product)} value={product} />
     <TextInput style={styles.input} placeholder='Amount' onChangeText={amount => setAmount(amount)} value={amount} />
-      <Button onPress={addItem} title="Add Item" />
-      <Button onPress={() => setData([])} title="Clear"/>
+      <Button onPress={saveItem} title="Add Item" />
       <Text style={styles.heading}>Shopping list</Text>
       <FlatList style={styles.list}
         keyExtractor={item => item.id.toString()}
@@ -52,7 +51,7 @@ useEffect(() => {
         renderItem={({ item }) =>
           <View style={styles.listcontainer}>
             <Text style={styles.text}>{item.product}, {item.amount}</Text>
-            <Text style={styles.textdelete} onPress={() => deleteItem(item.id)}></Text>
+            <Text style={styles.textdelete} onPress={() => deleteItem(item.id)}> bought</Text>
           </View>
         }
       />
@@ -68,7 +67,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   input: {
-    marginTop: 50,
+    marginTop: 5,
     marginBottom: 5,
     width: 200,
     borderColor: 'gray',
@@ -85,6 +84,7 @@ const styles = StyleSheet.create({
     color: '#0000ff'
   },
   listcontainer: {
+    marginTop:50,
     flexDirection: 'row',
     backgroundColor: '#fff',
     alignItems: 'center'
