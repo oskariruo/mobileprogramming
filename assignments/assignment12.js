@@ -8,43 +8,70 @@ export default function FireBaseShoppingList() {
     const [product, setProduct] = useState('');
     const [amount, setAmount] = useState('');
     const [items, setItems] = useState([]);
+    const [keys, setKeys] = useState([]);
 
-useEffect(() => {
+const updateList = () => {
   const itemsRef = ref(database, 'items/');
   onValue(itemsRef, (snapshot) => {
+    if (snapshot.exists()){
     const data = snapshot.val();
-    setItems(Object.values(data))
-  })
-}, []);
+    setItems(Object.values(data));
+    setKeys(Object.keys(data));
+  }
+    else{setItems([])
+  }
+  });
+}
+
+useEffect(updateList, []);
 
   const saveItem = () => {
     push(
       ref(database, 'items/'),
       { 'product': product, 'amount': amount})
-      .then( ()=> {alert('update success')})
-      .then(setProduct(''), setAmount(''))
-      .catch((error) => {alert(error);
-      });
-   }
+      .then(() => {
+        console.log('item added');
+        updateList();
+      })
+      }
+   
 
-  const deleteItem = async (id) => {
-   remove(
-    ref(database, 'items/' + id)
-   )
-  }
+  const deleteItem = (index) => {
+    let reference = ref(database, 'items/'+keys.splice(index)[0]);
+    remove(
+        reference
+      ).then(() => {
+        console.log('item removed');
+        updateList();
+      })
+    }
+
     return (
     <View style={styles.container}>
-    <TextInput style={styles.input} placeholder='Product' onChangeText={product => setProduct(product)} value={product} />
-    <TextInput style={styles.input} placeholder='Amount' onChangeText={amount => setAmount(amount)} value={amount} />
-      <Button onPress={saveItem} title="Add Item" />
+    <TextInput 
+    style={styles.input} 
+    placeholder='Product' 
+    onChangeText={product => setProduct(product)} 
+    value={product} 
+    />
+    <TextInput 
+    style={styles.input} 
+    placeholder='Amount' 
+    onChangeText={amount => setAmount(amount)} 
+    value={amount} 
+    />
+      <Button 
+      onPress={saveItem} 
+      title="Add Item" 
+      />
       <Text style={styles.heading}>Shopping list</Text>
-      <FlatList style={styles.list}
-        keyExtractor={item => item.id.toString()}
+      <FlatList 
+        style={styles.list}
         data={items}
-        renderItem={({ item }) =>
+        renderItem={({ item, index }) =>
           <View style={styles.listcontainer}>
             <Text style={styles.text}>{item.product}, {item.amount}</Text>
-            <Text style={styles.textdelete} onPress={() => deleteItem(item.id)}> bought</Text>
+            <Text style={styles.textdelete} onPress={() => deleteItem(index)}> bought</Text>
           </View>
         }
       />
