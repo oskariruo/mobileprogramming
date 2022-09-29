@@ -1,23 +1,9 @@
-import { initializeApp } from "firebase/app";
-import { getDatabase, push, ref, onValue, remove } from'firebase/database';
+import {push, ref, onValue, remove } from'firebase/database';
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, Button, TextInput, FlatList } from 'react-native';
-
+import {database} from '../components/config';
 
 export default function FireBaseShoppingList() {
-
-  const firebaseConfig = {
-  apiKey: "AIzaSyBkIjkMt_UHJE4xdMxHuSrtsM0ACGtwBz0",
-  authDomain: "shoppinglist-cdff3.firebaseapp.com",
-  databaseURL: "https://shoppinglist-cdff3-default-rtdb.europe-west1.firebasedatabase.app/",
-  projectId: "shoppinglist-cdff3",
-  storageBucket: "shoppinglist-cdff3.appspot.com",
-  messagingSenderId: "408726865689",
-  appId: "1:408726865689:web:fa569b902afb3e0dc86788",
-  measurementId: "G-PMV8EEWXP1"
-};
-const app = initializeApp(firebaseConfig);
-const database = getDatabase(app);
 
     const [product, setProduct] = useState('');
     const [amount, setAmount] = useState('');
@@ -27,14 +13,18 @@ useEffect(() => {
   const itemsRef = ref(database, 'items/');
   onValue(itemsRef, (snapshot) => {
     const data = snapshot.val();
-    setItems(Object.values(data));
-  });
+    setItems(Object.values(data))
+  })
 }, []);
 
   const saveItem = () => {
     push(
       ref(database, 'items/'),
-      { 'product': product, 'amount': amount});
+      { 'product': product, 'amount': amount})
+      .then( ()=> {alert('update success')})
+      .then(setProduct(''), setAmount(''))
+      .catch((error) => {alert(error);
+      });
    }
 
   const deleteItem = async (id) => {
