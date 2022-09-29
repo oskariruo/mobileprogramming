@@ -64,14 +64,14 @@ useEffect(updateList, []);
       onPress={saveItem} 
       title="Add Item" 
       />
-      <Text style={styles.heading}>Shopping list</Text>
+      <Text style={styles.heading}>Firebase Shopping list</Text>
       <FlatList 
         style={styles.list}
         data={items}
         renderItem={({ item, index }) =>
           <View style={styles.listcontainer}>
             <Text style={styles.text}>{item.product}, {item.amount}</Text>
-            <Text style={styles.textdelete} onPress={() => deleteItem(index)}> bought</Text>
+            <Text style={styles.textdelete} onPress={() => deleteItem(index)}> delete</Text>
           </View>
         }
       />
