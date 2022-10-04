@@ -27,5 +27,7 @@ export default function Home({navigation}) {
     </Button>
     <Button title="Assignment 12" onPress={() => navigation.navigate("Assignment 12")}>
     </Button>
+    <Button title="Assignment 13" onPress={() => navigation.navigate("Assignment 13")}>
+    </Button>
     </View>)
       }
