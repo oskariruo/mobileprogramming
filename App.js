@@ -16,6 +16,7 @@ import ModifiedMap from './assignments/assignment10';
 import SQLShoppingList from './assignments/assignment11';
 import FirebaseShoppingList from './assignments/assignment12';
 import ContactCollector from './assignments/assignment13';
+import SpeechApp from './assignments/assignment14';
 
 export default function App() {
   
@@ -39,6 +40,7 @@ export default function App() {
         <Stack.Screen name='Assignment 11' component={SQLShoppingList}/>
         <Stack.Screen name='Assignment 12' component={FirebaseShoppingList}/>
         <Stack.Screen name='Assignment 13' component={ContactCollector}/>
+        <Stack.Screen name='Assignment 14' component={SpeechApp}/>
       </Stack.Navigator>
       <StatusBar style="auto" />
     </NavigationContainer>
